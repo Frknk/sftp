@@ -17,7 +17,7 @@ services:
       FTP_PASS: "Uu123456789"
       LOCAL_UMASK: "000"
       PASV_ENABLE: "YES"
-      PASV_ADDRESS: "192.168.18.32"   # ⚠️ Usa tu IP local o pública si conectas desde otra red
+      PASV_ADDRESS: "ftp.frknk.com"   # ⚠️ Usa tu IP local o pública si conectas desde otra red
       PASV_MIN_PORT: "40000"
       PASV_MAX_PORT: "40009"
     cap_add:
