@@ -1,0 +1,42 @@
+
+
+services:
+  vsftpd:
+    image: fauria/vsftpd:latest
+    container_name: vsftpd-server
+    ports:
+      - "21:21"
+      - "20:20"
+      - "40000-40009:40000-40009"
+    volumes:
+      - ./data:/home/vsftpd/ftpuser:rw
+      - ./vsftpd/vsftpd.conf:/etc/vsftpd/vsftpd.conf   # Se quitó ":ro"
+      - ./vsftpd/certs/vsftpd.pem:/etc/ssl/certs/vsftpd.pem:ro
+    environment:
+      FTP_USER: "ftpuser"
+      FTP_PASS: "Uu123456789"
+      LOCAL_UMASK: "000"
+      PASV_ENABLE: "YES"
+      PASV_ADDRESS: "192.168.18.32"   # ⚠️ Usa tu IP local o pública si conectas desde otra red
+      PASV_MIN_PORT: "40000"
+      PASV_MAX_PORT: "40009"
+    cap_add:
+      - NET_ADMIN
+    restart: always
+    command: >
+      /bin/bash -c "chmod -R 777 /home/vsftpd/ftpuser && /usr/sbin/vsftpd /etc/vsftpd/vsftpd.conf"
+
+  filebrowser:
+    image: filebrowser/filebrowser:latest
+    container_name: filebrowser-web
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./data:/srv:rw
+      - ./filebrowser.db:/config.db
+    environment:
+      FB_BASEURL: "/"
+      FB_PORT: "8080"
+      FB_NOAUTH: "false"
+    restart: always
+    command: ["-a", "0.0.0.0", "-p", "8080", "--database", "/config.db", "--root", "/srv"]
